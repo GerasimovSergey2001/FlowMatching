@@ -73,7 +73,7 @@ class FlowMatching(nn.Module):
     def conditional_velocity(self, t, x, x1, eps=1e-7):
         dims = [1]*(len(x.shape)-1)
         t = t.view(-1, *dims)
-        return self.sigma(t, x1)/(self.dsigma_dt(t, x1) + eps)*(x-self.mu(t, x1)) + self.dmu_dt(t, x1)
+        return self.dsigma_dt(t, x1)/(self.sigma(t, x1) + eps)*(x-self.mu(t, x1)) + self.dmu_dt(t, x1)
     
     def target_velocity(self, t, x, x1):
         return self.conditional_velocity(t, self.conditional_flow(t, x, x1), x1)
