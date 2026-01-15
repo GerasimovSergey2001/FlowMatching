@@ -76,6 +76,7 @@ def main(d=2, device='cpu'):
         if epoch %100 == 0:
             print(f"Total Loss Epoch {epoch+1}: ", total_loss[-1])
 
+    fm = fm.to(device if torch.cuda.is_available() else 'cpu')
     samples_fm = fm.sample(train_data_length)
 
     df = pd.DataFrame(train_data)
@@ -98,7 +99,7 @@ def main(d=2, device='cpu'):
 
 
 
-    x1 = train_data[:256].to(device)
+    x1 = train_data[:256].to(device if torch.cuda.is_available() else 'cpu')
     logp = fm.logp(x1, n_samples=50, atol=1e-4, rtol=1e-5)
     logp_true = compute_gmm_logp(x1, weights, means, covs)
 
@@ -107,7 +108,7 @@ def main(d=2, device='cpu'):
     plt.show()
 
     if d==2:
-        plot_density_interactive(fm, weights, means, covs, device=device, range_lim=15, n_grid=32)
+        plot_density_interactive(fm, weights, means, covs, device=device if torch.cuda.is_available() else 'cpu', range_lim=15, n_grid=32)
 
 if __name__ == '__main__':
     d = int(sys.argv[1]) if len(sys.argv) > 1 else 2
